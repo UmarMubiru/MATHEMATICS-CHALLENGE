@@ -58,7 +58,7 @@ class Read extends Component
         if($this->sortColumn) {
             $data->orderBy($this->sortColumn, $this->sortType);
         } else {
-            $data->latest('id');
+            $data->latest('question_id');
         }
 
         $data = $data->paginate(config('easy_panel.pagination_count', 15));

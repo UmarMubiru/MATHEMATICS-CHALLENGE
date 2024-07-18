@@ -25,13 +25,13 @@ class UserComponent implements CRUDComponent
     // which kind of data should be showed in list page
     public function fields()
     {
-        return ['name', 'email', 'password'];
+        return ['name', 'email'];
     }
 
     // Searchable fields, if you dont want search feature, remove it
     public function searchable()
     {
-        return ['name', 'email', 'password'];
+        return ['name', 'email'];
     }
 
     // Write every fields in your db which you want to have a input

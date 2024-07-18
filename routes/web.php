@@ -18,7 +18,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('customer/import', [App\Http\Controllers\CustomerController::class, 'index']);
+Route::post('customer/import', [App\Http\Controllers\CustomerController::class, 'importExcelData']);
 
+Route::get('questions/import', [App\Http\Controllers\QuestionsController::class, 'index']);
+Route::post('questions/import', [App\Http\Controllers\QuestionsController::class, 'importExcelData']);
+
+Route::get('answers/import', [App\Http\Controllers\AnswersController::class, 'index']);
+Route::post('answers/import', [App\Http\Controllers\AnswersController::class, 'importExcelData']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -1,33 +1,31 @@
-<div class="card">
-    <div class="card-header p-0">
-        <h3 class="card-title">{{ __('CreateTitle', ['name' => __('Answers') ]) }}</h3>
-        <div class="px-2 mt-4">
-            <ul class="breadcrumb mt-3 py-3 px-4 rounded">
-                <li class="breadcrumb-item"><a href="@route(getRouteName().'.home')" class="text-decoration-none">{{ __('Dashboard') }}</a></li>
-                <li class="breadcrumb-item"><a href="@route(getRouteName().'.answers.read')" class="text-decoration-none">{{ __(\Illuminate\Support\Str::plural('Answers')) }}</a></li>
-                <li class="breadcrumb-item active">{{ __('Create') }}</li>
-            </ul>
+<div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 mt-5">
+
+                @if (session('status'))
+                    <div class="alert alert-success">{{ session('status') }}</div>
+                @endif
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Import Excel Data into Database in  Laravel 10</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <form action="{{ url('answers/import') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+
+                            <div class="input-group">
+                                <input type="file" name="import_file" class="form-control" />
+                                <button type="submit" class="btn btn-primary">Import</button>
+                            </div>
+
+                        </form>
+
+                        <hr>
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <form class="form-horizontal" wire:submit.prevent="create" enctype="multipart/form-data">
-
-        <div class="card-body">
-                        <!-- Answers Input -->
-            <div class='form-group'>
-                <label for='input-answers' class='col-sm-2 control-label '> {{ __('Answers') }}</label>
-                <input type='file' id='input-answers' wire:model='answers' class="form-control-file  @error('answers') is-invalid @enderror">
-                @if($answers and !$errors->has('answers') and $answers instanceof Illuminate\Http\UploadedFile and $answers->isPreviewable())
-                    <a href="{{ $answers->temporaryUrl() }}" target="_blank"><img width="200" height="200" class="mt-3 img-fluid shadow" src="{{ $answers->temporaryUrl() }}" alt=""></a>
-                @endif
-                @error('answers') <div class='invalid-feedback'>{{ $message }}</div> @enderror
-            </div>
-
-        </div>
-
-        <div class="card-footer">
-            <button type="submit" class="btn btn-info ml-4">{{ __('Create') }}</button>
-            <a href="@route(getRouteName().'.answers.read')" class="btn btn-default float-left">{{ __('Cancel') }}</a>
-        </div>
-    </form>
-</div>

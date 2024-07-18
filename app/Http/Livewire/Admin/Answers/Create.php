@@ -10,11 +10,9 @@ class Create extends Component
 {
     use WithFileUploads;
 
-    public $answers;
-
 
     protected $rules = [
-        'answers' => 'required|file|max:1255', // Adjust as needed
+
     ];
 
     public function updated($input)
@@ -29,12 +27,7 @@ class Create extends Component
 
         $this->dispatchBrowserEvent('show-message', ['type' => 'success', 'message' => __('CreatedMessage', ['name' => __('Answers') ])]);
 
-        if($this->getPropertyValue('answers') and is_object($this->answers)) {
-            $this->answers = $this->getPropertyValue('answers')->store('answers');
-        }
-
-        Answers::create([
-            'answers' => $this->answers,
+        Customer::create([
             'user_id' => auth()->id(),
         ]);
 

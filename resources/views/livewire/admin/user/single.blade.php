@@ -1,7 +1,6 @@
 <tr x-data="{ modalIsOpen : false }">
     <td class="">{{ $user->name }}</td>
     <td class="">{{ $user->email }}</td>
-    <td class="">{{ $user->password }}</td>
     
     @if(getCrudConfig('User')->delete or getCrudConfig('User')->update)
         <td>

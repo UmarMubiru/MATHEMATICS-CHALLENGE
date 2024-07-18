@@ -25,13 +25,13 @@ class QuestionsComponent implements CRUDComponent
     // which kind of data should be showed in list page
     public function fields()
     {
-        return ['questions'];
+        return ['questions', 'marks'];
     }
 
     // Searchable fields, if you dont want search feature, remove it
     public function searchable()
     {
-        return ['questions'];
+        return ['questions', 'marks'];
     }
 
     // Write every fields in your db which you want to have a input
@@ -39,7 +39,7 @@ class QuestionsComponent implements CRUDComponent
     // "password", "number", "email", "select", "date", "datetime", "time"
     public function inputs()
     {
-        return ['questions'=>'file'];
+        return [];
     }
 
     // Validation in update and create actions

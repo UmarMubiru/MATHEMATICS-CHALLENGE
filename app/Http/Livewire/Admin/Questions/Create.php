@@ -10,10 +10,9 @@ class Create extends Component
 {
     use WithFileUploads;
 
-    public $questions;
 
     protected $rules = [
-        'questions' => 'required|file|max:1255', // Adjust as needed
+
     ];
 
     public function updated($input)
@@ -28,12 +27,7 @@ class Create extends Component
 
         $this->dispatchBrowserEvent('show-message', ['type' => 'success', 'message' => __('CreatedMessage', ['name' => __('Questions') ])]);
 
-        if($this->getPropertyValue('questions') and is_object($this->questions)) {
-            $this->questions = $this->getPropertyValue('questions')->store('questions');
-        }
-
         Questions::create([
-            'questions' => $this->questions,
             'user_id' => auth()->id(),
         ]);
 

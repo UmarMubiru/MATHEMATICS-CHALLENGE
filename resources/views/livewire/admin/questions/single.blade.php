@@ -1,11 +1,11 @@
 <tr x-data="{ modalIsOpen : false }">
     <td class="">{{ $questions->questions }}</td>
-    
+
     @if(getCrudConfig('Questions')->delete or getCrudConfig('Questions')->update)
         <td>
 
             @if(getCrudConfig('Questions')->update && hasPermission(getRouteName().'.questions.update', 0, 0, $questions))
-                <a href="@route(getRouteName().'.questions.update', $questions->id)" class="btn text-primary mt-1">
+                <a href="@route(getRouteName().'.questions.update', $questions->question_id)" class="btn text-primary mt-1">
                     <i class="icon-pencil"></i>
                 </a>
             @endif

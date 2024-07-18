@@ -43,9 +43,7 @@ class AnswersComponent implements CRUDComponent
     // "password", "number", "email", "select", "date", "datetime", "time"
     public function inputs()
     {
-        return [
-            'answers'=>'file',
-        ];
+        return [];
     }
 
     // Validation in update and create actions
