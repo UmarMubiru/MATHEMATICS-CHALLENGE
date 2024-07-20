@@ -13,9 +13,9 @@ class Create extends Component
     public $name;
     public $email;
     public $password;
-    
+
     protected $rules = [
-        
+
     ];
 
     public function updated($input)
@@ -29,13 +29,16 @@ class Create extends Component
             $this->validate();
 
         $this->dispatchBrowserEvent('show-message', ['type' => 'success', 'message' => __('CreatedMessage', ['name' => __('User') ])]);
-        
+
         User::create([
             'name' => $this->name,
             'email' => $this->email,
             'password' => $this->password,
             'user_id' => auth()->id(),
         ]);
+
+            // Assign the "participant" role to the user
+    $user->assignRole('participant');
 
         $this->reset();
     }
