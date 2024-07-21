@@ -1,0 +1,49 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Server",
+            "request": "launch",
+            "mainClass": "matchchallenge.Server",
+            "classPaths": [
+                "${workspaceFolder}/lib/javax.mail.jar",
+                "${workspaceFolder}/lib/mysql-connector-java-9.0.0.jar",
+                "${workspaceFolder}/src"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "Launch Client",
+            "request": "launch",
+            "mainClass": "matchchallenge.Client",
+            "classPaths": [
+                "${workspaceFolder}/lib/javax.mail.jar",
+                "${workspaceFolder}/lib/mysql-connector-java-9.0.0.jar",
+                "${workspaceFolder}/src"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "Launch Participant",
+            "request": "launch",
+            "mainClass": "matchchallenge.Participant",
+            "classPaths": [
+                "${workspaceFolder}/lib/javax.mail.jar",
+                "${workspaceFolder}/lib/mysql-connector-java-9.0.0.jar",
+                "${workspaceFolder}/src"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "Launch ParticipantValidator",
+            "request": "launch",
+            "mainClass": "matchchallenge.ParticipantValidator",
+            "classPaths": [
+                "${workspaceFolder}/lib/javax.mail.jar",
+                "${workspaceFolder}/lib/mysql-connector-java-9.0.0.jar",
+                "${workspaceFolder}/src"
+            ]
+        }
+    ]
+}

@@ -1,77 +1,101 @@
 package mathchallenge;
 
-import javax.mail.*;
-import javax.mail.internet.*;
+import com.mysql.cj.Session;
+import com.mysql.cj.protocol.Message;
 import java.io.*;
 import java.net.*;
 import java.sql.*;
 import java.util.*;
 import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.internet.*;
+
+
+
+
 
 public class Server {
-    private static final int PORT = 8080;
+    private static final String EMAIL_FROM = "admin@mathcompetition.com";
+    private static final String EMAIL_HOST = "smtp.example.com";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/math_competition_db";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "";
 
-    public static void main(String[] args) {
-        new Server().start();
+    private static Map<String, String> registeredSchools = new HashMap<>();
+
+    static {
+        registeredSchools.put("SCH123", "rep1@school.com");
+        registeredSchools.put("SCH456", "rep2@school.com");
+        // Add more schools as needed
     }
 
-    public void start() {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Server is listening on port " + PORT);
+   public static boolean validateSchoolNumber(String schoolNumber) {
+    return registeredSchools.containsKey(schoolNumber);
+}
 
-            while (true) {
-                Socket socket = serverSocket.accept();
-                System.out.println("New client connected");
-
-                new ClientHandler(socket).start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+public static void addRecordToFile(String applicantName, String schoolNumber) {
+    try (FileWriter writer = new FileWriter("applicants.txt", true)) {
+        writer.write("Applicant: " + applicantName + ", School Number: " + schoolNumber + "\n");
+        System.out.println("Record added successfully.");
+    } catch (IOException e) {
+        e.printStackTrace();
     }
 }
 
-class ClientHandler extends Thread {
-    private Socket socket;
+public static void sendEmailNotification(String schoolNumber, String applicantName) {
+    String to = registeredSchools.get(schoolNumber);
+    String from = "admin@mathcompetition.com";
+    String host = "smtp.example.com";
 
-    public ClientHandler(Socket socket) {
-        this.socket = socket;
+    Properties properties = System.getProperties();
+    properties.setProperty("mail.smtp.host", host);
+    properties.put("mail.smtp.auth", "true");
+    properties.put("mail.smtp.starttls.enable", "true");
+
+    javax.mail.Session session = Session.getDefaultInstance(properties);
+
+    try {
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(from));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+        message.setSubject("Applicant Confirmation Needed");
+        message.setText("Dear School Representative,\n\nPlease confirm the registration of the applicant: " + applicantName + ".\n\nThank you.");
+
+        Transport.send(message);
+        System.out.println("Email sent successfully to: " + to);
+    } catch (MessagingException mex) {
+        mex.printStackTrace();
     }
+}
 
-    @Override
-    public void run() {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-
-            String action;
-            while ((action = in.readLine()) != null) {
-                switch (action.toLowerCase()) {
-                    case "register":
-                        handleRegistration(in, out);
-                        break;
-                    case "viewchallenges":
-                        handleViewChallenges(out);
-                        break;
-                    case "attemptchallenge":
-                        handleAttemptChallenge(in, out);
-                        break;
-                    case "viewapplicants":
-                        handleViewApplicants(out);
-                        break;
-                    case "confirm":
-                        handleConfirm(in, out);
-                        break;
-                    default:
-                        out.println("Invalid action.");
-                        break;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+public static String[] getApplicantDetails(String applicantId) {
+    String[] details = new String[2];
+    try {
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/math_competition_db", "root", "");
+        Statement stmt = conn.createStatement();
+        String query = "SELECT applicantName, schoolNumber FROM applicants WHERE applicantId = '" + applicantId + "'";
+        ResultSet rs = stmt.executeQuery(query);
+        if (rs.next()) {
+            details[0] = rs.getString("applicantName");
+            details[1] = rs.getString("schoolNumber");
         }
+        conn.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return details;
+}
+
+
+    private static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
-    private void handleRegistration(BufferedReader in, PrintWriter out) throws IOException {
+    public static void handleRegistration(BufferedReader in, PrintWriter out) throws IOException {
         String input = in.readLine();
         String[] details = input.split(",");
 
@@ -96,8 +120,9 @@ class ClientHandler extends Thread {
             return;
         }
 
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/math_competition_db", "root", "");
-             PreparedStatement stmt = conn.prepareStatement("INSERT INTO participants (username, firstname, lastname, emailAddress, dateOfBirth, schoolRegistrationNumber, imageFile) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+        String query = "INSERT INTO participants (username, firstname, lastname, emailAddress, dateOfBirth, schoolRegistrationNumber, imageFile) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, participant.getUsername());
             stmt.setString(2, participant.getFirstname());
@@ -118,22 +143,28 @@ class ClientHandler extends Thread {
         }
     }
 
-    private void handleViewChallenges(PrintWriter out) {
-        // Dummy implementation for viewing challenges
-        out.println("Challenge 1: Mathematics Challenge 2024");
-        out.println("Challenge 2: Mathematics Challenge 2023");
-        out.println("---");
+    public static void sendEmailToSchoolRep(String schoolRegistrationNumber, String username) {
+        String to = registeredSchools.get(schoolRegistrationNumber);
+        String subject = "New Participant Registration";
+        String body = "A new participant with username " + username + " has registered. Please confirm.";
+        sendEmailNotification(to, subject, body);
     }
 
-    private void handleAttemptChallenge(BufferedReader in, PrintWriter out) throws IOException {
+    private static void sendEmailNotification(String to, String subject, String body) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'sendEmailNotification'");
+    }
+
+    public static void handleAttemptChallenge(BufferedReader in, PrintWriter out) throws IOException {
         String challengeNumber = in.readLine();
 
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/math_competition_db", "root", "");
-             Statement stmt = conn.createStatement()) {
+        String query = "SELECT question_id, question_text FROM questions WHERE challenge_number = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            // Retrieve questions for the selected challenge
-            ResultSet rs = stmt.executeQuery("SELECT question_id, question_text FROM questions WHERE challenge_number = '" + challengeNumber + "'");
-            
+            stmt.setString(1, challengeNumber);
+            ResultSet rs = stmt.executeQuery();
+
             List<String> questions = new ArrayList<>();
             while (rs.next()) {
                 questions.add(rs.getString("question_text"));
@@ -157,7 +188,6 @@ class ClientHandler extends Thread {
             // Handle client responses
             for (int i = 0; i < selectedQuestions.size(); i++) {
                 String answer = in.readLine();
-                // Process the answer, e.g., save it to the database or validate it
                 out.println("Received answer for Question " + (i + 1) + ": " + answer);
             }
 
@@ -168,119 +198,111 @@ class ClientHandler extends Thread {
         }
     }
 
-    private void handleViewApplicants(PrintWriter out) {
+    public static void handleViewChallenges(PrintWriter out) {
+        // Dummy implementation for viewing challenges
+        out.println("Challenge 1: Mathematics Challenge 2024");
+        out.println("Challenge 2: Mathematics Challenge 2023");
+        out.println("---");
+    }
+
+    public static void handleViewApplicants(PrintWriter out) {
         // Dummy implementation for viewing applicants
-        // Implement actual logic to read from a file or database
         out.println("Applicant 1: John Doe, Registration Number: 1234");
         out.println("Applicant 2: Jane Smith, Registration Number: 5678");
         out.println("---");
     }
 
-    private void handleConfirm(BufferedReader in, PrintWriter out) throws IOException {
+    public static void handleConfirm(BufferedReader in, PrintWriter out) throws IOException {
         String input = in.readLine();
         String[] details = input.split(" ");
-        
+
         if (details.length != 3) {
-            out.println("Invalid confirmation details. Please provide 'yes/no username schoolNumber'.");
+            out.println("Invalid confirmation details. Please provide yes/no, username, and school number.");
             return;
         }
 
-        String confirmation = details[0].trim();
+        String response = details[0].trim();
         String username = details[1].trim();
-        String schoolRegistrationNumber = details[2].trim();
+        String schoolNumber = details[2].trim();
 
-        if (confirmation.equalsIgnoreCase("yes")) {
-            // Accept the participant
-            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/math_competition_db", "root", "");
-                 PreparedStatement stmt = conn.prepareStatement("INSERT INTO participants (username, schoolRegistrationNumber) SELECT username, ? FROM pending_participants WHERE username = ?")) {
-                 
-                stmt.setString(1, schoolRegistrationNumber);
-                stmt.setString(2, username);
-                stmt.executeUpdate();
-
-                // Remove from pending and notify participant
-                removePendingParticipant(username);
-                sendEmailToParticipant(username, "accepted");
-
-                out.println("Participant " + username + " accepted.");
-            } catch (SQLException e) {
-                e.printStackTrace();
-                out.println("Error accepting participant: " + e.getMessage());
-            }
-        } else if (confirmation.equalsIgnoreCase("no")) {
-            // Reject the participant
-            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/math_competition_db", "root", "");
-                 PreparedStatement stmt = conn.prepareStatement("DELETE FROM pending_participants WHERE username = ?")) {
-
-                stmt.setString(1, username);
-                stmt.executeUpdate();
-
-                // Move to rejected and notify participant
-                moveToRejected(username);
-                sendEmailToParticipant(username, "rejected");
-
-                out.println("Participant " + username + " rejected.");
-            } catch (SQLException e) {
-                e.printStackTrace();
-                out.println("Error rejecting participant: " + e.getMessage());
-            }
+        if (response.equalsIgnoreCase("yes")) {
+            // Confirm registration
+            removePendingParticipant(username);
+            out.println("Registration confirmed for " + username);
+        } else if (response.equalsIgnoreCase("no")) {
+            // Move to rejected list
+            moveToRejected(username);
+            out.println("Registration rejected for " + username);
         } else {
-            out.println("Invalid confirmation action. Use 'yes' or 'no'.");
+            out.println("Invalid confirmation response. Use 'yes' or 'no'.");
         }
     }
 
-    private void sendEmailToSchoolRep(String schoolRegistrationNumber, String username) {
-        // Email configuration
-        String from = "your_email@example.com"; // Update with your email
-        String host = "smtp.example.com"; // Update with your SMTP server
-
-        // Placeholder for recipient email. Replace with actual logic to get recipient email from schoolRegistrationNumber
-        String to = "school_rep@example.com"; 
-
-        String subject = "New Participant Registration";
-        String body = "A new participant with username " + username + " has registered. Please confirm.";
-
-        sendEmail(from, to, host, subject, body);
-    }
-
-    private void sendEmailToParticipant(String username, String status) {
-        // Email configuration
-        String from = "your_email@example.com"; // Update with your email
-        String host = "smtp.example.com"; // Update with your SMTP server
-
-        // Placeholder for participant email. Replace with actual logic to get participant email from username
-        String to = "participant@example.com";
-
-        String subject = "Registration Status";
-        String body = "Your registration status is: " + status;
-
-        sendEmail(from, to, host, subject, body);
-    }
-
-    private void sendEmail(String from, String to, String host, String subject, String body) {
-        Properties properties = System.getProperties();
-        properties.setProperty("mail.smtp.host", host);
-        Session session = Session.getDefaultInstance(properties);
-
-        try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(from));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject(subject);
-            message.setText(body);
-
-            Transport.send(message);
-            System.out.println("Email sent successfully to " + to);
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
+    public static void removePendingParticipant(String username) {
+        String query = "DELETE FROM pending_participants WHERE username = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    private void removePendingParticipant(String username) {
-        // Implement logic to remove participant from the pending list
-    }
-
-    private void moveToRejected(String username) {
+    public static void moveToRejected(String username) {
         // Implement logic to move participant to rejected list
+    }
+
+    public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(8080)) {
+            System.out.println("Server is running...");
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                new ClientHandler(clientSocket).start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class ClientHandler extends Thread {
+    private Socket socket;
+
+    public ClientHandler(Socket socket) {
+        this.socket = socket;
+    }
+
+    @Override
+    public void run() {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+            String action;
+            while ((action = in.readLine()) != null) {
+                switch (action.toLowerCase()) {
+                    case "register":
+                        Server.handleRegistration(in, out);
+                        break;
+                    case "viewchallenges":
+                        Server.handleViewChallenges(out);
+                        break;
+                    case "attemptchallenge":
+                        Server.handleAttemptChallenge(in, out);
+                        break;
+                    case "viewapplicants":
+                        Server.handleViewApplicants(out);
+                        break;
+                    case "confirm":
+                        Server.handleConfirm(in, out);
+                        break;
+                    default:
+                        out.println("Invalid action.");
+                        break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
