@@ -10,9 +10,13 @@
                         <li class="breadcrumb-item"><a href="@route(getRouteName().'.home')" class="text-decoration-none">{{ __('Dashboard') }}</a></li>
                         <li class="breadcrumb-item active">{{ __(\Illuminate\Support\Str::plural('Reports')) }}</li>
                     </ul>
-                      <p>The Reports Display different Groupings</p>
-                    <div class="row justify-content-between mt-4 mb-4">
 
+                    <div class="row justify-content-between mt-4 mb-4">
+                        @if(getCrudConfig('Reports')->create && hasPermission(getRouteName().'.reports.create', 0, 0))
+                        <div class="col-md-4 right-0">
+                            <a href="@route(getRouteName().'.reports.create')" class="btn btn-success">{{ __('CreateTitle', ['name' => __('Reports') ]) }}</a>
+                        </div>
+                        @endif
                         @if(getCrudConfig('Reports')->searchable())
                         <div class="col-md-4">
                             <div class="input-group">
@@ -34,7 +38,7 @@
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-
+                            
                             @if(getCrudConfig('Reports')->delete or getCrudConfig('Reports')->update)
                                 <th scope="col">{{ __('Action') }}</th>
                             @endif

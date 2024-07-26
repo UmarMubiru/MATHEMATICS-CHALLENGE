@@ -25,13 +25,26 @@ class ParticipantsComponent implements CRUDComponent
     // which kind of data should be showed in list page
     public function fields()
     {
-        return [];
+        return [ 'username',
+        'firstname',
+        'lastname',
+        'emailAddress',
+        'dateOfBirth',
+        'schoolRegistrationNumber',
+        'imageFile' ];
     }
 
     // Searchable fields, if you dont want search feature, remove it
     public function searchable()
     {
-        return [];
+        return [
+            'username',
+        'firstname',
+        'lastname',
+        'emailAddress',
+        'dateOfBirth',
+        'schoolRegistrationNumber',
+        ];
     }
 
     // Write every fields in your db which you want to have a input

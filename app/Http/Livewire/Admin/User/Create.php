@@ -37,11 +37,25 @@ class Create extends Component
             'user_id' => auth()->id(),
         ]);
 
-            // Assign the "participant" role to the user
-    $user->assignRole('participant');
+    // Add user to the panel
+    $this->addUserToPanel($user);
 
-        $this->reset();
-    }
+    // Optionally, you can redirect the user or perform other actions
+    session()->flash('message', 'Registration successful!');
+    return redirect()->route('home');
+}
+
+protected function addUserToPanel($user)
+{
+    // Assuming EasyPanel has a method to add users
+    // Replace this with actual API call or method to integrate with EasyPanel
+    $easyPanelApi = new EasyPanelApi(); // Hypothetical API client
+    $easyPanelApi->addUser([
+        'name' => $user->name,
+        'email' => $user->email,
+        'role' => 'user', // or any specific role
+    ]);
+}
 
     public function render()
     {

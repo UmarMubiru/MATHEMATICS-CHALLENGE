@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
                 ->name('register');
@@ -59,11 +60,6 @@ Route::middleware('auth')->group(function () {
                 ->name('logout');
 
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-
-    return redirect('/welcome');
-})->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::get('/profile', function () {
     // Only verified users may access this route...

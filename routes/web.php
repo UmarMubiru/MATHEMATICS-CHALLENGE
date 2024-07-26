@@ -2,6 +2,12 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\QuestionsController;
+use App\Http\Controllers\ChallengeController;
+
+// routes/web.php
+
+use App\Http\Controllers\AnalyticsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +26,19 @@ Route::get('/', function () {
 
 Route::get('customer/import', [App\Http\Controllers\CustomerController::class, 'index']);
 Route::post('customer/import', [App\Http\Controllers\CustomerController::class, 'importExcelData']);
+Route::get('/customer', 'CustomerController@index')->name('dashboard.customer.read');
+Route::resource('customer', 'CustomerController');
 
-Route::get('questions/import', [App\Http\Controllers\QuestionsController::class, 'index']);
-Route::post('questions/import', [App\Http\Controllers\QuestionsController::class, 'importExcelData']);
+Route::post('/import-questions', [QuestionsController::class, 'importExcelData'])->name('import.questions');
+
+Route::get('/analytics', [AnalyticsController::class, 'allAnalytics']);
+
+
+
+// Route for displaying the welcome page with challenge winners and top schools
+Route::get('/', [ChallengeController::class, 'index']);
+
+
 
 Route::get('answers/import', [App\Http\Controllers\AnswersController::class, 'index']);
 Route::post('answers/import', [App\Http\Controllers\AnswersController::class, 'importExcelData']);

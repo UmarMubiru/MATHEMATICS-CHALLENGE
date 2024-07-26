@@ -1,15 +1,22 @@
 <tr x-data="{ modalIsOpen : false }">
+    <td class="">{{ $participants->username }}</td>
+    <td class="">{{ $participants->firstname }}</td>
+    <td class="">{{ $participants->lastname }}</td>
+    <td class="">{{ $participants->emailAddress }}</td>
+    <td class="">{{ $participants->dateOfBirth }}</td>
+    <td class="">{{ $participants->schoolRegistrationNumber }}</td>
+    <td class="">{{ $participants->imageFile }}</td>
     
     @if(getCrudConfig('Participants')->delete or getCrudConfig('Participants')->update)
         <td>
 
-            @if(getCrudConfig('Participants')->update && hasPermission(getRouteName().'.participants.update', 1, 1, $participants))
+            @if(getCrudConfig('Participants')->update && hasPermission(getRouteName().'.participants.update', 0, 0, $participants))
                 <a href="@route(getRouteName().'.participants.update', $participants->id)" class="btn text-primary mt-1">
                     <i class="icon-pencil"></i>
                 </a>
             @endif
 
-            @if(getCrudConfig('Participants')->delete && hasPermission(getRouteName().'.participants.delete', 1, 1, $participants))
+            @if(getCrudConfig('Participants')->delete && hasPermission(getRouteName().'.participants.delete', 0, 0, $participants))
                 <button @click.prevent="modalIsOpen = true" class="btn text-danger mt-1">
                     <i class="icon-trash"></i>
                 </button>

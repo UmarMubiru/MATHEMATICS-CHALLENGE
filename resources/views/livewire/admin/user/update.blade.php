@@ -32,15 +32,7 @@
                 <input type='password' id='input-password' wire:model.lazy='password' class="form-control  @error('password') is-invalid @enderror" placeholder=''>
                 @error('password') <div class='invalid-feedback'>{{ $message }}</div> @enderror
             </div>
-            <!-- Inside your form -->
-            <div class="form-group">
-                <label for="role">User Role</label>
-                <select id="role" name="role" class="form-control">
-                    @foreach ($roles as $role)
-                        <option value="{{ $role->id }}">{{ $role->name }}</option>
-                    @endforeach
-                </select>
-            </div>
+
 
 
         </div>

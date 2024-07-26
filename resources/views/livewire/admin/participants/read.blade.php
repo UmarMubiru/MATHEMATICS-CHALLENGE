@@ -12,11 +12,7 @@
                     </ul>
 
                     <div class="row justify-content-between mt-4 mb-4">
-                        @if(getCrudConfig('Participants')->create && hasPermission(getRouteName().'.participants.create', 1, 1))
-                        <div class="col-md-4 right-0">
-                            <a href="@route(getRouteName().'.participants.create')" class="btn btn-success">{{ __('CreateTitle', ['name' => __('Participants') ]) }}</a>
-                        </div>
-                        @endif
+
                         @if(getCrudConfig('Participants')->searchable())
                         <div class="col-md-4">
                             <div class="input-group">
@@ -38,7 +34,14 @@
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-                            
+                            <th scope="col" style='cursor: pointer' wire:click="sort('username')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'username') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'username') fa-sort-amount-up ml-2 @endif'></i> {{ __('Username') }} </th>
+                            <th scope="col" style='cursor: pointer' wire:click="sort('firstname')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'firstname') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'firstname') fa-sort-amount-up ml-2 @endif'></i> {{ __('Firstname') }} </th>
+                            <th scope="col" style='cursor: pointer' wire:click="sort('lastname')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'lastname') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'lastname') fa-sort-amount-up ml-2 @endif'></i> {{ __('Lastname') }} </th>
+                            <th scope="col" style='cursor: pointer' wire:click="sort('emailAddress')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'emailAddress') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'emailAddress') fa-sort-amount-up ml-2 @endif'></i> {{ __('EmailAddress') }} </th>
+                            <th scope="col" style='cursor: pointer' wire:click="sort('dateOfBirth')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'dateOfBirth') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'dateOfBirth') fa-sort-amount-up ml-2 @endif'></i> {{ __('DateOfBirth') }} </th>
+                            <th scope="col" style='cursor: pointer' wire:click="sort('schoolRegistrationNumber')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'schoolRegistrationNumber') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'schoolRegistrationNumber') fa-sort-amount-up ml-2 @endif'></i> {{ __('SchoolRegistrationNumber') }} </th>
+                            <th scope="col" style='cursor: pointer' wire:click="sort('imageFile')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'imageFile') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'imageFile') fa-sort-amount-up ml-2 @endif'></i> {{ __('ImageFile') }} </th>
+
                             @if(getCrudConfig('Participants')->delete or getCrudConfig('Participants')->update)
                                 <th scope="col">{{ __('Action') }}</th>
                             @endif

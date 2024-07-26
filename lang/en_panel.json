@@ -90,5 +90,14 @@
     "Participants": "Participants",
     "Phone": "Phone",
     "Customer": "Customer",
-    "Customers": "Customers"
+    "Customers": "Customers",
+    "Username": "Username",
+    "Firstname": "Firstname",
+    "Lastname": "Lastname",
+    "EmailAddress": "EmailAddress",
+    "DateOfBirth": "DateOfBirth",
+    "SchoolRegistrationNumber": "SchoolRegistrationNumber",
+    "ImageFile": "ImageFile",
+    "Result": "Result",
+    "Results": "Results"
 }

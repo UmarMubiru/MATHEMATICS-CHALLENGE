@@ -1,3 +1,4 @@
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -43,7 +44,7 @@
                             <th scope="col" style='cursor: pointer' wire:click="sort('registration_number')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'registration_number') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'registration_number') fa-sort-amount-up ml-2 @endif'></i> {{ __('Registration_number') }} </th>
                             <th scope="col" style='cursor: pointer' wire:click="sort('email')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'email') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'email') fa-sort-amount-up ml-2 @endif'></i> {{ __('Email') }} </th>
                             <th scope="col" style='cursor: pointer' wire:click="sort('representative')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'representative') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'representative') fa-sort-amount-up ml-2 @endif'></i> {{ __('Representative') }} </th>
-                            
+
                             @if(getCrudConfig('Schools')->delete or getCrudConfig('Schools')->update)
                                 <th scope="col">{{ __('Action') }}</th>
                             @endif
@@ -65,3 +66,4 @@
         </div>
     </div>
 </div>
+

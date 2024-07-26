@@ -227,7 +227,78 @@
     </div>
     <!-- End Hero -->
 
+<!-- Winners Section -->
+<div class="container-lg content-space-t-3 content-space-t-lg-4 content-space-b-2">
+  <div class="text-center mx-lg-auto">
+    <!-- Winners Heading -->
+    <div class="mb-7">
+      <h2 class="display-4 mb-3">Challenge Winners</h2>
+      <p class="fs-3">Congratulations to the top performers in our latest challenges!</p>
+    </div>
+    <!-- End Winners Heading -->
+<!-- Winners List -->
+<div class="container mt-5">
+    <div class="row">
+        @foreach($winners as $challengeName => $challengeWinners)
+            <!-- Challenge Column -->
+            <div class="col-md-4 mb-5">
+                <h2>{{ $challengeName }}</h2>
+                <div class="list-group">
+                    @forelse($challengeWinners as $winner)
+                        <!-- Winner Card -->
+                        <div class="list-group-item list-group-item-action">
+                            <h5 class="mb-3">{{ $winner->winner }}</h5>
+                            <p class="mb-3">School: <strong>{{ $winner->school }}</strong></p>
+                        </div>
+                        <!-- End Winner Card -->
+                    @empty
+                        <p>No winners for this challenge yet.</p>
+                    @endforelse
+                </div>
+            </div>
+            <!-- End Challenge Column -->
+        @endforeach
+    </div>
+</div>
+<!-- End Winners List -->
 
+  </div>
+</div>
+<!-- End Winners Section -->
+
+<!-- Best Schools Section -->
+<div class="container-lg content-space-t-3 content-space-t-lg-4 content-space-b-2">
+  <div class="text-center mx-lg-auto">
+    <!-- Schools Heading -->
+    <div class="mb-7">
+      <h2 class="display-4 mb-3">Top Schools</h2>
+      <p class="fs-3">These schools have excelled in our recent challenges.</p>
+
+    </div>
+    <!-- End Schools Heading -->
+
+<div class="container mt-5">
+        <div class="row justify-content-center mb-3">
+            @foreach($topSchools as $school)
+                <!-- School Card -->
+                <div class="col-md-4 mb-5">
+                    <div class="card shadow-sm border-light">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $school->school }}</h5>
+                            <p class="card-text">Average Score: <strong>{{ number_format($school->average_score, 2) }}</strong></p>
+                            <!-- Add more details about the school as needed -->
+                        </div>
+                    </div>
+                </div>
+                <!-- End School Card -->
+            @endforeach
+        </div>
+    </div>
+    </div>
+    <!-- End Schools List -->
+  </div>
+</div>
+<!-- End Best Schools Section -->
 
     <!-- Sliding Image -->
     <div class="content-space-b-2">

@@ -1,31 +1,33 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\Questions;
 use Illuminate\Http\Request;
 use App\Imports\QuestionsImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class QuestionsController extends Controller
-{
-    public function index()
-    {
-        $questions = Questions::all();
-        return view('questions.index', compact('questions'));
-    }
 
+{
     public function importExcelData(Request $request)
     {
+        // Validate the uploaded file
         $request->validate([
-            'import_file' => [
-                'required',
-                'file'
-            ],
+            'import_file' => 'required|mimes:xlsx,xls,csv|max:2048', // Add max size if needed
         ]);
 
-        Excel::import(new QuestionsImport, $request->file('import_file'));
+        // Check if the file is uploaded
+        if ($request->hasFile('import_file')) {
+            // Import the data
+            Excel::import(new QuestionsImport, $request->file('import_file'));
 
-        return redirect()->back()->with('status', 'Imported Successfully');
+            // Return a response
+            return redirect()->back()->with('status', 'Questions imported successfully.');
+        }
+
+        // Return error if no file was uploaded
+        return redirect()->back()->with('status', 'Please upload a valid file.');
+
+        Log::info('Request data:', $request->all());
+
     }
 }

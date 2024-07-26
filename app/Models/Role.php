@@ -19,6 +19,14 @@ public function roles()
 }
 
 
+public function render()
+{
+    $roles = Role::all();
+    return view('livewire.admin.user.update', [
+        'roles' => $roles,
+        'user' => $this->user,
+    ])->layout('admin::layouts.app', ['title' => __('UpdateTitle', ['name' => __('User') ])]);
+}
 
 
 

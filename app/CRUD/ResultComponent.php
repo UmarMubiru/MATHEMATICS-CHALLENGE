@@ -4,9 +4,9 @@ namespace App\CRUD;
 
 use EasyPanel\Contracts\CRUDComponent;
 use EasyPanel\Parsers\Fields\Field;
-use App\Models\Customer;
+use App\Models\Result;
 
-class CustomerComponent implements CRUDComponent
+class ResultComponent implements CRUDComponent
 {
     // Manage actions in crud
     public $create = true;
@@ -19,19 +19,19 @@ class CustomerComponent implements CRUDComponent
 
     public function getModel()
     {
-        return Customer::class;
+        return Result::class;
     }
 
     // which kind of data should be showed in list page
     public function fields()
     {
-        return ['name', 'email', 'phone'];
+        return [];
     }
 
     // Searchable fields, if you dont want search feature, remove it
     public function searchable()
     {
-        return ['name', 'email', 'phone'];
+        return [];
     }
 
     // Write every fields in your db which you want to have a input

@@ -1,3 +1,4 @@
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -43,7 +44,7 @@
                             <th scope="col" style='cursor: pointer' wire:click="sort('close_date')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'close_date') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'close_date') fa-sort-amount-up ml-2 @endif'></i> {{ __('Close_date') }} </th>
                             <th scope="col" style='cursor: pointer' wire:click="sort('duration')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'duration') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'duration') fa-sort-amount-up ml-2 @endif'></i> {{ __('Duration') }} </th>
                             <th scope="col" style='cursor: pointer' wire:click="sort('no_of_questions')"> <i class='fa @if($sortType == 'desc' and $sortColumn == 'no_of_questions') fa-sort-amount-down ml-2 @elseif($sortType == 'asc' and $sortColumn == 'no_of_questions') fa-sort-amount-up ml-2 @endif'></i> {{ __('No_of_questions') }} </th>
-                            
+
                             @if(getCrudConfig('Challenge')->delete or getCrudConfig('Challenge')->update)
                                 <th scope="col">{{ __('Action') }}</th>
                             @endif

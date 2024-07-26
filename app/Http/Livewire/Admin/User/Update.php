@@ -15,16 +15,16 @@ class Update extends Component
     public $name;
     public $email;
     public $password;
-    
+
     protected $rules = [
-        
+
     ];
 
     public function mount(User $User){
         $this->user = $User;
         $this->name = $this->user->name;
         $this->email = $this->user->email;
-        $this->password = $this->user->password;        
+        $this->password = $this->user->password;
     }
 
     public function updated($input)
@@ -38,7 +38,7 @@ class Update extends Component
             $this->validate();
 
         $this->dispatchBrowserEvent('show-message', ['type' => 'success', 'message' => __('UpdatedMessage', ['name' => __('User') ]) ]);
-        
+
         $this->user->update([
             'name' => $this->name,
             'email' => $this->email,

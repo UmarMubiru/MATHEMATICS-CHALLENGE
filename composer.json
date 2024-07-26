@@ -10,8 +10,10 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "laravel/ui": "^4.5",
         "maatwebsite/excel": "^3.1",
         "mailersend/laravel-driver": "^2.6",
+        "phpoffice/phpspreadsheet": "^1.29",
         "rezaamini-ir/laravel-easypanel": "^2.3",
         "spatie/laravel-permission": "^6.9"
     },
